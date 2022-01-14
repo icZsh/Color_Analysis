@@ -35,20 +35,19 @@ color_map = {
 
 
 def get_dominant_color(image):
-    # 颜色模式转换，以便输出rgb颜色值
+    # convert image format
     image = image.convert('RGBA')
-    # 生成缩略图，减少计算量，减小cpu压力
+    # generate thumbnails
     image.thumbnail((200, 200))
     max_score = 0
     dominant_color = None
     for count, (r, g, b, a) in image.getcolors(image.size[0] * image.size[1]):
-        # 跳过纯黑色
+        # skip pure black
         if a == 0:
             continue
         saturation = colorsys.rgb_to_hsv(r / 255.0, g / 255.0, b / 255.0)[1]
         y = min(abs(r * 2104 + g * 4130 + b * 802 + 4096 + 131072) >> 13, 235)
         y = (y - 16.0) / (235 - 16)
-        # 忽略高亮色
         if y > 0.9:
             continue
         # Calculate the score, preferring highly saturated colors.
@@ -73,11 +72,9 @@ def get_RGB(url):
     return RGB_array
 
 def RGB_to_Hex(rgb):
-    # 将RGB格式划分开来
     color = '#'
     for i in rgb:
         num = int(i)
-        # 将R、G、B分别转化为16进制拼接转换并大写  hex() 函数用于将10进制整数转换成16进制，以字符串形式表示
         color += str(hex(num))[-2:].replace('x', '0').upper()
     return color
 
